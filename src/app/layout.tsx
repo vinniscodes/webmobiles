@@ -18,7 +18,7 @@ const fontCode = Source_Code_Pro({
 });
 
 export const metadata: Metadata = {
-  title: 'CineVerse',
+  title: 'CINEWEB',
   description: 'Seu universo pessoal de filmes e séries.',
 };
 
