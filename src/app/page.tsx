@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Card,
   CardContent,
@@ -27,11 +27,11 @@ export default function SearchPage() {
   const [title, setTitle] = useState('');
   const [type, setType] = useState<MediaType | 'any'>('any');
   const [results, setResults] = useState<Media[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [searched, setSearched] = useState(false);
   const [popular, setPopular] = useState<Media[]>([]);
 
-  useState(() => {
+  useEffect(() => {
     const fetchPopular = async () => {
       setLoading(true);
       const popularResults = await searchMedia('', 'multi'); // Busca geral para populares
@@ -39,7 +39,7 @@ export default function SearchPage() {
       setLoading(false);
     };
     fetchPopular();
-  });
+  }, []);
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -97,9 +97,9 @@ export default function SearchPage() {
                 </Select>
               </div>
               <div className="lg:col-span-3">
-                <Button type="submit" className="w-full" disabled={loading}>
+                <Button type="submit" className="w-full" disabled={loading && searched}>
                   <Search className="mr-2 h-4 w-4" />{' '}
-                  {loading ? 'Buscando...' : 'Buscar'}
+                  {loading && searched ? 'Buscando...' : 'Buscar'}
                 </Button>
               </div>
             </form>
