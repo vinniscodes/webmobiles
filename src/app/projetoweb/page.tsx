@@ -28,7 +28,7 @@ export default function ProjectWebPage() {
 
   return (
     <div className="max-w-4xl mx-auto space-y-8">
-      <h1 className="text-4xl font-headline text-accent text-center">
+      <h1 className="text-4xl font-headline text-primary text-center">
         Sobre o Projeto
       </h1>
 

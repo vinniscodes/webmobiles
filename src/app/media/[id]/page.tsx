@@ -34,7 +34,7 @@ export default async function MediaDetailPage({ params }: { params: { id: string
         </div>
         <div className="md:col-span-2 space-y-6">
           <div className="space-y-2">
-            <h1 className="text-4xl md:text-5xl font-headline font-bold text-accent">
+            <h1 className="text-4xl md:text-5xl font-headline font-bold text-primary">
               {media.title}
             </h1>
             <p className="text-xl text-muted-foreground">{media.year}</p>

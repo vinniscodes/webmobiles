@@ -157,7 +157,7 @@ export default function ProfilePage() {
 
   return (
     <div className="space-y-8">
-      <h1 className="text-4xl font-headline text-accent text-center">
+      <h1 className="text-4xl font-headline text-primary text-center">
         Minha Lista
       </h1>
 

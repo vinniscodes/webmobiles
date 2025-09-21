@@ -75,7 +75,7 @@ export function MovieCard({ media }: MovieCardProps) {
   };
 
   return (
-    <Card className="overflow-hidden transition-transform transform hover:-translate-y-2 hover:shadow-2xl hover:shadow-primary/20">
+    <Card className="overflow-hidden transition-transform transform hover:-translate-y-1">
       <Link href={`/media/${media.type}-${media.tmdbId}`} className="block">
         <CardContent className="p-0 relative group">
           <Image
@@ -86,30 +86,27 @@ export function MovieCard({ media }: MovieCardProps) {
             className="w-full h-auto object-cover"
             data-ai-hint={media.posterImageHint}
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+          <div className="absolute inset-0 bg-black/70 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
             <div className="flex space-x-2">
               <Button
-                variant={saved ? "default" : "outline"}
+                variant={saved ? "default" : "secondary"}
                 size="icon"
-                className="bg-background/70 hover:bg-accent hover:text-accent-foreground transition-all"
                 onClick={handleSave}
                 aria-label="Salvar"
               >
                 {saved ? <Check /> : <Bookmark />}
               </Button>
               <Button
-                variant={liked ? "default" : "outline"}
+                variant={liked ? "default" : "secondary"}
                 size="icon"
-                className="bg-background/70 hover:bg-accent hover:text-accent-foreground transition-all"
                 onClick={handleLike}
                 aria-label="Gostei"
               >
                 <ThumbsUp />
               </Button>
               <Button
-                variant={disliked ? "default" : "outline"}
+                variant={disliked ? "default" : "secondary"}
                 size="icon"
-                className="bg-background/70 hover:bg-accent hover:text-accent-foreground transition-all"
                 onClick={handleDislike}
                 aria-label="Não Gostei"
               >

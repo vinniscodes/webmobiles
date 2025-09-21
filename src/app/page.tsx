@@ -34,7 +34,7 @@ export default function SearchPage() {
   useEffect(() => {
     const fetchPopular = async () => {
       setLoading(true);
-      const popularResults = await searchMedia('', 'multi'); // Busca geral para populares
+      const popularResults = await searchMedia('', 'multi');
       setPopular(popularResults);
       setLoading(false);
     };
@@ -57,9 +57,9 @@ export default function SearchPage() {
   return (
     <div className="space-y-12">
       <section id="search">
-        <Card className="max-w-4xl mx-auto">
-          <CardHeader>
-            <CardTitle className="text-3xl font-headline text-accent">
+        <Card className="max-w-4xl mx-auto border-0 shadow-none">
+          <CardHeader className="text-center">
+            <CardTitle className="text-3xl font-headline text-primary">
               Busque por Filmes e Séries
             </CardTitle>
             <CardDescription>
@@ -69,24 +69,25 @@ export default function SearchPage() {
           <CardContent>
             <form
               onSubmit={handleSearch}
-              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-end"
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-end max-w-2xl mx-auto"
             >
               <div className="lg:col-span-2 space-y-2">
-                <label htmlFor="title">Título</label>
+                <label htmlFor="title" className="sr-only">Título</label>
                 <Input
                   id="title"
                   placeholder="Ex: The Matrix"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
+                  className="text-base"
                 />
               </div>
               <div className="space-y-2">
-                <label htmlFor="type">Tipo</label>
+                <label htmlFor="type" className="sr-only">Tipo</label>
                 <Select
                   value={type}
                   onValueChange={(value) => setType(value as MediaType | 'any')}
                 >
-                  <SelectTrigger id="type">
+                  <SelectTrigger id="type" className="text-base">
                     <SelectValue placeholder="Qualquer" />
                   </SelectTrigger>
                   <SelectContent>
@@ -97,7 +98,7 @@ export default function SearchPage() {
                 </Select>
               </div>
               <div className="lg:col-span-3">
-                <Button type="submit" className="w-full" disabled={loading && searched}>
+                <Button type="submit" size="lg" className="w-full" disabled={loading && searched}>
                   <Search className="mr-2 h-4 w-4" />{' '}
                   {loading && searched ? 'Buscando...' : 'Buscar'}
                 </Button>
@@ -114,7 +115,7 @@ export default function SearchPage() {
         {loading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
             {Array.from({ length: 10 }).map((_, i) => (
-               <Card key={i}>
+               <Card key={i} className="border-0 shadow-none">
                 <Skeleton className="h-[400px] w-full" />
                 <CardHeader>
                   <Skeleton className="h-6 w-3/4" />
