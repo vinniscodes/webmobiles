@@ -1,11 +1,29 @@
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 export default function ProjectWebPage() {
   const teamMembers = [
-    'Malu de Faria Neves Bezerra',
-    'Vinicius Anderson Cavalcanti Silva',
-    'Leandro Lima da Silva',
-    'Pedro Victor Gomes de Araújo',
+    {
+      name: 'Malu de Faria Neves Bezerra',
+      contribution: 'Gerente de Projeto, designer de UI/UX e desenvolvedora front-end. Responsável pela pesquisa de design, criação de protótipos e desenvolvimento da interface do usuário com React e ShadCN.',
+    },
+    {
+      name: 'Vinicius Anderson Cavalcanti Silva',
+      contribution: 'Desenvolvedor back-end. Focado na integração com a API do TMDB, configuração do servidor e gerenciamento da lógica de busca de dados.',
+    },
+    {
+      name: 'Leandro Lima da Silva',
+      contribution: 'Desenvolvedor full-stack. Trabalhou na implementação das funcionalidades de "like", "salvar" e "não gostei", além de auxiliar no front-end e back-end.',
+    },
+    {
+      name: 'Pedro Victor Gomes de Araújo',
+      contribution: 'Desenvolvedor front-end. Colaborou na estilização dos componentes, responsividade do site e na implementação da página de perfil do usuário.',
+    },
   ];
 
   return (
@@ -19,11 +37,14 @@ export default function ProjectWebPage() {
           <CardTitle>Integrantes da Equipe</CardTitle>
         </CardHeader>
         <CardContent>
-          <ul className="list-disc list-inside space-y-2">
+          <Accordion type="single" collapsible className="w-full">
             {teamMembers.map((member, index) => (
-              <li key={index}>{member}</li>
+              <AccordionItem value={`item-${index}`} key={index}>
+                <AccordionTrigger>{member.name}</AccordionTrigger>
+                <AccordionContent>{member.contribution}</AccordionContent>
+              </AccordionItem>
             ))}
-          </ul>
+          </Accordion>
         </CardContent>
       </Card>
 
@@ -52,10 +73,10 @@ export default function ProjectWebPage() {
             outro back-end que você desejar).
           </p>
           <div>
-            <p>
+            <p className="mb-2">
               Utilize também alguma outra API, como as disponibilizadas em:
             </p>
-            <ul className="list-disc list-inside pl-4 mt-2">
+            <ul className="list-disc list-inside pl-4">
               <li>https://rapidapi.com/collection/list-of-free-apis</li>
               <li>https://github.com/public-apis/public-apis</li>
               <li>https://apilist.fun/</li>
@@ -64,10 +85,10 @@ export default function ProjectWebPage() {
             </ul>
           </div>
           <div>
-            <p>
+            <p className="mb-2">
               A entrega do trabalho deve ser realizada anexando:
             </p>
-            <ul className="list-disc list-inside pl-4 mt-2">
+            <ul className="list-disc list-inside pl-4">
               <li>
                 link para o seu código no github (repositório precisa ter um
                 arquivo README.md com o nome de todos os integrantes da equipe)
@@ -100,3 +121,4 @@ export default function ProjectWebPage() {
       </Card>
     </div>
   );
+}
