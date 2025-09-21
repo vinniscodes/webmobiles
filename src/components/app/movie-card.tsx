@@ -24,11 +24,13 @@ export function MovieCard({ media }: MovieCardProps) {
     e.stopPropagation();
 
     let title = '';
-    let description = 'Esta é uma demonstração. A funcionalidade ainda não foi implementada.';
+    let description: string | undefined = undefined;
 
     switch (action) {
       case 'Salvar':
         title = `"${media.title}" salvo na sua lista!`;
+        // Aqui você adicionaria a lógica para salvar o item no backend/estado global
+        // Por enquanto, apenas exibimos a notificação de sucesso.
         break;
       case 'Gostei':
         title = `Você curtiu "${media.title}"!`;
