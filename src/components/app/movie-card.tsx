@@ -8,9 +8,10 @@ import {
   CardFooter,
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Bookmark, ThumbsDown, ThumbsUp } from 'lucide-react';
+import { Bookmark, Check, ThumbsDown, ThumbsUp } from 'lucide-react';
 import type { Media } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
+import { useProfile } from '@/context/profile-context';
 
 interface MovieCardProps {
   media: Media;
@@ -18,32 +19,59 @@ interface MovieCardProps {
 
 export function MovieCard({ media }: MovieCardProps) {
   const { toast } = useToast();
+  const { 
+    isSaved, 
+    isLiked, 
+    isDisliked, 
+    addSavedItem, 
+    addLikedItem, 
+    addDislikedItem,
+    removeSavedItem,
+    removeLikedItem,
+    removeDislikedItem,
+  } = useProfile();
 
-  const handleAction = (e: React.MouseEvent, action: string) => {
+  const saved = isSaved(media.id);
+  const liked = isLiked(media.id);
+  const disliked = isDisliked(media.id);
+
+  const handleSave = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
 
-    let title = '';
-    let description: string | undefined = undefined;
-
-    switch (action) {
-      case 'Salvar':
-        title = `"${media.title}" salvo na sua lista!`;
-        // Aqui você adicionaria a lógica para salvar o item no backend/estado global
-        // Por enquanto, apenas exibimos a notificação de sucesso.
-        break;
-      case 'Gostei':
-        title = `Você curtiu "${media.title}"!`;
-        break;
-      case 'Não Gostei':
-        title = `Você não curtiu "${media.title}".`;
-        break;
+    if (saved) {
+      removeSavedItem(media.id);
+      toast({ title: `"${media.title}" removido da sua lista.` });
+    } else {
+      addSavedItem(media);
+      toast({ title: `"${media.title}" salvo na sua lista!` });
     }
+  };
 
-    toast({
-      title: title,
-      description: description,
-    });
+  const handleLike = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (liked) {
+      removeLikedItem(media.id);
+    } else {
+      addLikedItem(media);
+      if (disliked) removeDislikedItem(media.id);
+      toast({ title: `Você curtiu "${media.title}"!` });
+    }
+  };
+
+  const handleDislike = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (disliked) {
+      removeDislikedItem(media.id);
+    } else {
+      addDislikedItem(media);
+      if (liked) removeLikedItem(media.id);
+      toast({ title: `Você não curtiu "${media.title}".` });
+    }
   };
 
   return (
@@ -61,28 +89,28 @@ export function MovieCard({ media }: MovieCardProps) {
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
             <div className="flex space-x-2">
               <Button
-                variant="outline"
+                variant={saved ? "default" : "outline"}
                 size="icon"
                 className="bg-background/70 hover:bg-accent hover:text-accent-foreground transition-all"
-                onClick={(e) => handleAction(e, 'Salvar')}
+                onClick={handleSave}
                 aria-label="Salvar"
               >
-                <Bookmark />
+                {saved ? <Check /> : <Bookmark />}
               </Button>
               <Button
-                variant="outline"
+                variant={liked ? "default" : "outline"}
                 size="icon"
                 className="bg-background/70 hover:bg-accent hover:text-accent-foreground transition-all"
-                onClick={(e) => handleAction(e, 'Gostei')}
+                onClick={handleLike}
                 aria-label="Gostei"
               >
                 <ThumbsUp />
               </Button>
               <Button
-                variant="outline"
+                variant={disliked ? "default" : "outline"}
                 size="icon"
                 className="bg-background/70 hover:bg-accent hover:text-accent-foreground transition-all"
-                onClick={(e) => handleAction(e, 'Não Gostei')}
+                onClick={handleDislike}
                 aria-label="Não Gostei"
               >
                 <ThumbsDown />

@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
-import { mockSavedItems } from '@/lib/data';
 import type { SavedMedia } from '@/lib/types';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -20,43 +19,39 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useProfile } from '@/context/profile-context';
+import { MovieCard } from '@/components/app/movie-card';
 
-export default function ProfilePage() {
-  const [savedItems, setSavedItems] = useState<SavedMedia[]>(mockSavedItems);
+function SavedItemsList() {
+  const { savedItems, updateSavedItem, removeSavedItem } = useProfile();
   const [editingItem, setEditingItem] = useState<SavedMedia | null>(null);
 
   const handleUpdateStatus = (id: string) => {
-    setSavedItems(
-      savedItems.map((item) =>
-        item.id === id
-          ? {
-              ...item,
-              status: item.status === 'pending' ? 'watched' : 'pending',
-            }
-          : item
-      )
-    );
-  };
-
-  const handleRemoveItem = (id: string) => {
-    setSavedItems(savedItems.filter((item) => item.id !== id));
+    const item = savedItems.find((i) => i.id === id);
+    if (item) {
+      updateSavedItem({
+        ...item,
+        status: item.status === 'pending' ? 'watched' : 'pending',
+      });
+    }
   };
 
   const handleSaveChanges = (updatedItem: SavedMedia) => {
-    setSavedItems(
-      savedItems.map((item) =>
-        item.id === updatedItem.id ? updatedItem : item
-      )
-    );
+    updateSavedItem(updatedItem);
     setEditingItem(null);
   };
 
+  if (savedItems.length === 0) {
+    return (
+      <p className="text-center text-muted-foreground mt-8">
+        Sua lista de itens salvos está vazia.
+      </p>
+    );
+  }
+
   return (
-    <div className="space-y-8">
-      <h1 className="text-4xl font-headline text-accent text-center">Minha Lista</h1>
-      {savedItems.length === 0 ? (
-        <p className="text-center text-muted-foreground">Sua lista está vazia. Comece salvando alguns filmes ou séries!</p>
-      ) : (
+    <>
       <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8">
         {savedItems.map((item) => (
           <Card key={item.id} className="flex flex-col">
@@ -72,21 +67,21 @@ export default function ProfilePage() {
               <div className="flex-1">
                 <h2 className="text-xl font-bold">{item.title}</h2>
                 <p className="text-sm text-muted-foreground">{item.year}</p>
-                 <Badge
-                    variant={item.status === 'watched' ? 'default' : 'secondary'}
-                    className="mt-2"
-                  >
-                    {item.status === 'watched' ? (
-                      <CheckCircle className="mr-1 h-3 w-3" />
-                    ) : (
-                      <Clock className="mr-1 h-3 w-3" />
-                    )}
-                    {item.status === 'watched' ? 'Assistido' : 'Pendente'}
-                  </Badge>
+                <Badge
+                  variant={item.status === 'watched' ? 'default' : 'secondary'}
+                  className="mt-2"
+                >
+                  {item.status === 'watched' ? (
+                    <CheckCircle className="mr-1 h-3 w-3" />
+                  ) : (
+                    <Clock className="mr-1 h-3 w-3" />
+                  )}
+                  {item.status === 'watched' ? 'Assistido' : 'Pendente'}
+                </Badge>
               </div>
             </CardHeader>
             <CardContent className="flex-grow p-4 pt-0">
-               {item.userRating && (
+              {item.userRating && (
                 <div className="flex items-center space-x-1 mb-2">
                   <Star className="w-5 h-5 text-yellow-400 fill-yellow-400" />
                   <span className="font-bold text-lg">{item.userRating}</span>
@@ -98,14 +93,20 @@ export default function ProfilePage() {
                   {item.notes}
                 </p>
               )}
-             
             </CardContent>
             <CardFooter className="p-4 pt-0 flex justify-between">
-              <Button variant="ghost" onClick={() => handleUpdateStatus(item.id)}>
+              <Button
+                variant="ghost"
+                onClick={() => handleUpdateStatus(item.id)}
+              >
                 Mudar Status
               </Button>
               <div className="flex space-x-2">
-                <Button variant="outline" size="icon" onClick={() => setEditingItem(item)}>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => setEditingItem(item)}
+                >
                   <Pencil className="h-4 w-4" />
                   <span className="sr-only">Editar</span>
                 </Button>
@@ -120,12 +121,15 @@ export default function ProfilePage() {
                     <AlertDialogHeader>
                       <AlertDialogTitle>Você tem certeza?</AlertDialogTitle>
                       <AlertDialogDescription>
-                        Isso removerá permanentemente "{item.title}" da sua lista.
+                        Isso removerá permanentemente "{item.title}" da sua
+                        lista.
                       </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
                       <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                      <AlertDialogAction onClick={() => handleRemoveItem(item.id)}>
+                      <AlertDialogAction
+                        onClick={() => removeSavedItem(item.id)}
+                      >
                         Remover
                       </AlertDialogAction>
                     </AlertDialogFooter>
@@ -136,7 +140,6 @@ export default function ProfilePage() {
           </Card>
         ))}
       </div>
-      )}
       {editingItem && (
         <EditProfileItemDialog
           item={editingItem}
@@ -145,6 +148,58 @@ export default function ProfilePage() {
           onSave={handleSaveChanges}
         />
       )}
+    </>
+  );
+}
+
+export default function ProfilePage() {
+  const { likedItems, dislikedItems } = useProfile();
+
+  return (
+    <div className="space-y-8">
+      <h1 className="text-4xl font-headline text-accent text-center">
+        Minha Lista
+      </h1>
+
+      <Tabs defaultValue="saved" className="w-full">
+        <TabsList className="grid w-full grid-cols-3 max-w-lg mx-auto">
+          <TabsTrigger value="saved">Salvos</TabsTrigger>
+          <TabsTrigger value="liked">Gostei</TabsTrigger>
+          <TabsTrigger value="disliked">Não Gostei</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="saved" className="mt-6">
+          <SavedItemsList />
+        </TabsContent>
+        
+        <TabsContent value="liked" className="mt-6">
+          {likedItems.length === 0 ? (
+            <p className="text-center text-muted-foreground">
+              Você ainda não curtiu nenhum item.
+            </p>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+              {likedItems.map((media) => (
+                <MovieCard key={media.id} media={media} />
+              ))}
+            </div>
+          )}
+        </TabsContent>
+        
+        <TabsContent value="disliked" className="mt-6">
+          {dislikedItems.length === 0 ? (
+            <p className="text-center text-muted-foreground">
+              Você ainda não marcou nenhum item como "não gostei".
+            </p>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+              {dislikedItems.map((media) => (
+                <MovieCard key={media.id} media={media} />
+              ))}
+            </div>
+          )}
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }
