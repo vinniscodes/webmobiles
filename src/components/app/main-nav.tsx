@@ -10,6 +10,7 @@ export function MainNav() {
   const routes = [
     { href: '/', label: 'Buscar' },
     { href: '/profile', label: 'Meu Perfil' },
+    { href: '/projetoweb', label: 'Projeto WEB' },
   ];
 
   return (
