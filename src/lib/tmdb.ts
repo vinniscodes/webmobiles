@@ -17,8 +17,8 @@ async function getGenreMap() {
 
   try {
     const [movieGenresRes, tvGenresRes] = await Promise.all([
-      fetch(`${API_BASE_URL}/genre/movie/list?api_key=${API_KEY}`),
-      fetch(`${API_BASE_URL}/genre/tv/list?api_key=${API_KEY}`),
+      fetch(`${API_BASE_URL}/genre/movie/list?api_key=${API_KEY}&language=pt-BR`),
+      fetch(`${API_BASE_URL}/genre/tv/list?api_key=${API_KEY}&language=pt-BR`),
     ]);
     const movieGenres = await movieGenresRes.json();
     const tvGenres = await tvGenresRes.json();
@@ -71,7 +71,8 @@ const normalizeMediaDetails = (item: any, mediaType: MediaType): Media => {
 // Search for movies, TV series, or both
 export async function searchMedia(query: string, type: 'movie' | 'tv' | 'multi'): Promise<Media[]> {
   const genres = await getGenreMap();
-  const url = `${API_BASE_URL}/search/${type}?api_key=${API_KEY}&query=${encodeURIComponent(query)}`;
+  const endpoint = query ? `search/${type}` : `${type === 'multi' ? 'trending/all/week' : 'discover/' + type }`;
+  const url = `${API_BASE_URL}/${endpoint}?api_key=${API_KEY}&language=pt-BR&query=${encodeURIComponent(query)}`;
   
   try {
     const response = await fetch(url);
@@ -87,9 +88,8 @@ export async function searchMedia(query: string, type: 'movie' | 'tv' | 'multi')
 }
 
 // Get details for a specific movie or series
-export async function getMediaDetails(id: string, type: 'movie' | 'series'): Promise<Media | null> {
-   const mediaType = type === 'series' ? 'tv' : 'movie';
-   const url = `${API_BASE_URL}/${mediaType}/${id}?api_key=${API_KEY}`;
+export async function getMediaDetails(id: string, type: 'movie' | 'tv'): Promise<Media | null> {
+   const url = `${API_BASE_URL}/${type}/${id}?api_key=${API_KEY}&language=pt-BR`;
 
   try {
     const response = await fetch(url);
@@ -97,7 +97,7 @@ export async function getMediaDetails(id: string, type: 'movie' | 'series'): Pro
         return null;
     }
     const data = await response.json();
-    return normalizeMediaDetails(data, mediaType);
+    return normalizeMediaDetails(data, type);
   } catch (error) {
     console.error('Get media details failed:', error);
     return null;

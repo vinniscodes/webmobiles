@@ -22,9 +22,25 @@ export function MovieCard({ media }: MovieCardProps) {
   const handleAction = (e: React.MouseEvent, action: string) => {
     e.preventDefault();
     e.stopPropagation();
+
+    let title = '';
+    let description = 'Esta é uma demonstração. A funcionalidade ainda não foi implementada.';
+
+    switch (action) {
+      case 'Salvar':
+        title = `"${media.title}" salvo na sua lista!`;
+        break;
+      case 'Gostei':
+        title = `Você curtiu "${media.title}"!`;
+        break;
+      case 'Não Gostei':
+        title = `Você não curtiu "${media.title}".`;
+        break;
+    }
+
     toast({
-      title: `${action}: ${media.title}`,
-      description: 'This is a demo. Functionality not implemented.',
+      title: title,
+      description: description,
     });
   };
 
@@ -34,7 +50,7 @@ export function MovieCard({ media }: MovieCardProps) {
         <CardContent className="p-0 relative group">
           <Image
             src={media.posterUrl}
-            alt={`Poster for ${media.title}`}
+            alt={`Pôster de ${media.title}`}
             width={500}
             height={750}
             className="w-full h-auto object-cover"
@@ -46,7 +62,8 @@ export function MovieCard({ media }: MovieCardProps) {
                 variant="outline"
                 size="icon"
                 className="bg-background/70 hover:bg-accent hover:text-accent-foreground transition-all"
-                onClick={(e) => handleAction(e, 'Saved')}
+                onClick={(e) => handleAction(e, 'Salvar')}
+                aria-label="Salvar"
               >
                 <Bookmark />
               </Button>
@@ -54,7 +71,8 @@ export function MovieCard({ media }: MovieCardProps) {
                 variant="outline"
                 size="icon"
                 className="bg-background/70 hover:bg-accent hover:text-accent-foreground transition-all"
-                onClick={(e) => handleAction(e, 'Liked')}
+                onClick={(e) => handleAction(e, 'Gostei')}
+                aria-label="Gostei"
               >
                 <ThumbsUp />
               </Button>
@@ -62,7 +80,8 @@ export function MovieCard({ media }: MovieCardProps) {
                 variant="outline"
                 size="icon"
                 className="bg-background/70 hover:bg-accent hover:text-accent-foreground transition-all"
-                onClick={(e) => handleAction(e, 'Disliked')}
+                onClick={(e) => handleAction(e, 'Não Gostei')}
+                aria-label="Não Gostei"
               >
                 <ThumbsDown />
               </Button>

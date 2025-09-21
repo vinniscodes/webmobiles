@@ -8,8 +8,8 @@ export function MainNav() {
   const pathname = usePathname();
 
   const routes = [
-    { href: '/', label: 'Search' },
-    { href: '/profile', label: 'Profile' },
+    { href: '/', label: 'Buscar' },
+    { href: '/profile', label: 'Meu Perfil' },
   ];
 
   return (

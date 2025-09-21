@@ -53,9 +53,9 @@ export default function ProfilePage() {
 
   return (
     <div className="space-y-8">
-      <h1 className="text-4xl font-headline text-accent text-center">My Watchlist</h1>
+      <h1 className="text-4xl font-headline text-accent text-center">Minha Lista</h1>
       {savedItems.length === 0 ? (
-        <p className="text-center text-muted-foreground">Your watchlist is empty. Start by saving some movies or series!</p>
+        <p className="text-center text-muted-foreground">Sua lista está vazia. Comece salvando alguns filmes ou séries!</p>
       ) : (
       <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8">
         {savedItems.map((item) => (
@@ -63,7 +63,7 @@ export default function ProfilePage() {
             <CardHeader className="flex-row gap-4 items-start p-4">
               <Image
                 src={item.posterUrl}
-                alt={`Poster for ${item.title}`}
+                alt={`Pôster de ${item.title}`}
                 width={100}
                 height={150}
                 className="rounded-md object-cover"
@@ -81,7 +81,7 @@ export default function ProfilePage() {
                     ) : (
                       <Clock className="mr-1 h-3 w-3" />
                     )}
-                    {item.status.charAt(0).toUpperCase() + item.status.slice(1)}
+                    {item.status === 'watched' ? 'Assistido' : 'Pendente'}
                   </Badge>
               </div>
             </CardHeader>
@@ -102,31 +102,31 @@ export default function ProfilePage() {
             </CardContent>
             <CardFooter className="p-4 pt-0 flex justify-between">
               <Button variant="ghost" onClick={() => handleUpdateStatus(item.id)}>
-                Toggle Status
+                Mudar Status
               </Button>
               <div className="flex space-x-2">
                 <Button variant="outline" size="icon" onClick={() => setEditingItem(item)}>
                   <Pencil className="h-4 w-4" />
-                  <span className="sr-only">Edit</span>
+                  <span className="sr-only">Editar</span>
                 </Button>
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
                     <Button variant="destructive" size="icon">
                       <Trash2 className="h-4 w-4" />
-                      <span className="sr-only">Remove</span>
+                      <span className="sr-only">Remover</span>
                     </Button>
                   </AlertDialogTrigger>
                   <AlertDialogContent>
                     <AlertDialogHeader>
-                      <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                      <AlertDialogTitle>Você tem certeza?</AlertDialogTitle>
                       <AlertDialogDescription>
-                        This will permanently remove "{item.title}" from your watchlist.
+                        Isso removerá permanentemente "{item.title}" da sua lista.
                       </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
-                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogCancel>Cancelar</AlertDialogCancel>
                       <AlertDialogAction onClick={() => handleRemoveItem(item.id)}>
-                        Remove
+                        Remover
                       </AlertDialogAction>
                     </AlertDialogFooter>
                   </AlertDialogContent>

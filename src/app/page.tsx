@@ -29,6 +29,17 @@ export default function SearchPage() {
   const [results, setResults] = useState<Media[]>([]);
   const [loading, setLoading] = useState(false);
   const [searched, setSearched] = useState(false);
+  const [popular, setPopular] = useState<Media[]>([]);
+
+  useState(() => {
+    const fetchPopular = async () => {
+      setLoading(true);
+      const popularResults = await searchMedia('', 'multi'); // Busca geral para populares
+      setPopular(popularResults);
+      setLoading(false);
+    };
+    fetchPopular();
+  });
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -41,16 +52,18 @@ export default function SearchPage() {
     setLoading(false);
   };
 
+  const displayResults = searched ? results : popular;
+
   return (
     <div className="space-y-12">
       <section id="search">
         <Card className="max-w-4xl mx-auto">
           <CardHeader>
             <CardTitle className="text-3xl font-headline text-accent">
-              Search for Movies & Series
+              Busque por Filmes e Séries
             </CardTitle>
             <CardDescription>
-              Find your next favorite thing to watch.
+              Encontre seu próximo programa favorito para assistir.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -59,34 +72,34 @@ export default function SearchPage() {
               className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-end"
             >
               <div className="lg:col-span-2 space-y-2">
-                <label htmlFor="title">Title</label>
+                <label htmlFor="title">Título</label>
                 <Input
                   id="title"
-                  placeholder="e.g., The Matrix"
+                  placeholder="Ex: The Matrix"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                 />
               </div>
               <div className="space-y-2">
-                <label htmlFor="type">Type</label>
+                <label htmlFor="type">Tipo</label>
                 <Select
                   value={type}
                   onValueChange={(value) => setType(value as MediaType | 'any')}
                 >
                   <SelectTrigger id="type">
-                    <SelectValue placeholder="Any" />
+                    <SelectValue placeholder="Qualquer" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="any">Any</SelectItem>
-                    <SelectItem value="movie">Movie</SelectItem>
-                    <SelectItem value="tv">Series</SelectItem>
+                    <SelectItem value="any">Qualquer</SelectItem>
+                    <SelectItem value="movie">Filme</SelectItem>
+                    <SelectItem value="tv">Série</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
               <div className="lg:col-span-3">
                 <Button type="submit" className="w-full" disabled={loading}>
                   <Search className="mr-2 h-4 w-4" />{' '}
-                  {loading ? 'Searching...' : 'Search'}
+                  {loading ? 'Buscando...' : 'Buscar'}
                 </Button>
               </div>
             </form>
@@ -96,7 +109,7 @@ export default function SearchPage() {
 
       <section id="results">
         <h2 className="text-3xl font-headline mb-6 text-center">
-          {searched ? 'Search Results' : 'Popular Now'}
+          {searched ? 'Resultados da Busca' : 'Populares do Momento'}
         </h2>
         {loading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
@@ -112,13 +125,13 @@ export default function SearchPage() {
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-            {results.map((media) => (
+            {displayResults.map((media) => (
               <MovieCard key={media.id} media={media} />
             ))}
           </div>
         )}
          {searched && !loading && results.length === 0 && (
-          <p className="text-center text-muted-foreground mt-8">No results found for your search.</p>
+          <p className="text-center text-muted-foreground mt-8">Nenhum resultado encontrado para sua busca.</p>
         )}
       </section>
     </div>

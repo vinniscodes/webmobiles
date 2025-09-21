@@ -16,7 +16,7 @@ import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import type { SavedMedia } from '@/lib/types';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 const formSchema = z.object({
   userRating: z.number().min(0).max(10),
@@ -67,14 +67,14 @@ export function EditProfileItemDialog({
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Edit: {item.title}</DialogTitle>
+          <DialogTitle>Editar: {item.title}</DialogTitle>
           <DialogDescription>
-            Update your personal rating and notes for this {item.type}.
+            Atualize sua nota e anotações para este {item.type === 'movie' ? 'filme' : 'série'}.
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <div className="space-y-4">
-            <Label htmlFor="userRating">Your Rating: {ratingValue} / 10</Label>
+            <Label htmlFor="userRating">Sua Nota: {ratingValue} / 10</Label>
             <Controller
               name="userRating"
               control={control}
@@ -91,14 +91,14 @@ export function EditProfileItemDialog({
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="notes">Notes</Label>
+            <Label htmlFor="notes">Anotações</Label>
             <Controller
               name="notes"
               control={control}
               render={({ field }) => (
                 <Textarea
                   id="notes"
-                  placeholder="Your thoughts on the movie/series..."
+                  placeholder="Suas impressões sobre o filme/série..."
                   {...field}
                   value={field.value ?? ''}
                   rows={4}
@@ -108,9 +108,9 @@ export function EditProfileItemDialog({
           </div>
           <DialogFooter>
             <Button type="button" variant="outline" onClick={() => setIsOpen(false)}>
-              Cancel
+              Cancelar
             </Button>
-            <Button type="submit">Save Changes</Button>
+            <Button type="submit">Salvar Alterações</Button>
           </DialogFooter>
         </form>
       </DialogContent>

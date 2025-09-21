@@ -4,6 +4,7 @@ import './globals.css';
 import { cn } from '@/lib/utils';
 import { Header } from '@/components/app/header';
 import { Toaster } from '@/components/ui/toaster';
+import { Footer } from '@/components/app/footer';
 
 const fontBody = Inter({
   subsets: ['latin'],
@@ -17,7 +18,7 @@ const fontCode = Source_Code_Pro({
 
 export const metadata: Metadata = {
   title: 'CineVerse',
-  description: 'Your personal universe of movies and series.',
+  description: 'Seu universo pessoal de filmes e séries.',
 };
 
 export default function RootLayout({
@@ -26,17 +27,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
+    <html lang="pt-BR" className="dark">
       <body
         className={cn(
-          'min-h-screen bg-background font-body antialiased',
+          'min-h-screen bg-background font-body antialiased flex flex-col',
           fontBody.variable,
           fontCode.variable
         )}
       >
         <Header />
-        <main className="container mx-auto px-4 py-8">{children}</main>
+        <main className="container mx-auto px-4 py-8 flex-grow">{children}</main>
         <Toaster />
+        <Footer />
       </body>
     </html>
   );

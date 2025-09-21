@@ -9,11 +9,11 @@ import type { Media } from '@/lib/types';
 export default async function MediaDetailPage({ params }: { params: { id: string } }) {
   const [type, tmdbId] = params.id.split('-');
   
-  if (!type || !tmdbId || (type !== 'movie' && type !== 'series')) {
+  if (!type || !tmdbId || (type !== 'movie' && type !== 'tv')) {
     notFound();
   }
   
-  const media = await getMediaDetails(tmdbId, type as 'movie' | 'series');
+  const media = await getMediaDetails(tmdbId, type as 'movie' | 'tv');
 
   if (!media) {
     notFound();
@@ -25,7 +25,7 @@ export default async function MediaDetailPage({ params }: { params: { id: string
         <div className="md:col-span-1">
           <Image
             src={media.posterUrl}
-            alt={`Poster for ${media.title}`}
+            alt={`Pôster de ${media.title}`}
             width={500}
             height={750}
             className="rounded-lg shadow-lg w-full"
@@ -52,14 +52,14 @@ export default async function MediaDetailPage({ params }: { params: { id: string
           </div>
 
           <div>
-            <h2 className="text-2xl font-semibold mb-2">Synopsis</h2>
+            <h2 className="text-2xl font-semibold mb-2">Sinopse</h2>
             <p className="text-foreground/80 leading-relaxed">
               {media.synopsis}
             </p>
           </div>
 
           <div>
-            <h2 className="text-2xl font-semibold mb-3">Genres</h2>
+            <h2 className="text-2xl font-semibold mb-3">Gêneros</h2>
             <div className="flex flex-wrap gap-2">
               {media.genres.map((genre) => (
                 <Badge key={genre} variant="secondary" className="text-sm">
@@ -72,7 +72,7 @@ export default async function MediaDetailPage({ params }: { params: { id: string
           <div className="pt-4">
             <Button size="lg">
               <Bookmark className="mr-2 h-5 w-5" />
-              Save to Profile
+              Salvar no Perfil
             </Button>
           </div>
         </div>
