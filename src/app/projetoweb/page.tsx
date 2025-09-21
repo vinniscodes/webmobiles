@@ -51,8 +51,10 @@ export default function ProjectWebPage() {
             interligada ao back-end desenvolvido com o back4app (ou qualquer
             outro back-end que você desejar).
           </p>
-          <p>
-            Utilize também alguma outra API, como as disponibilizadas em:
+          <div>
+            <p>
+              Utilize também alguma outra API, como as disponibilizadas em:
+            </p>
             <ul className="list-disc list-inside pl-4 mt-2">
               <li>https://rapidapi.com/collection/list-of-free-apis</li>
               <li>https://github.com/public-apis/public-apis</li>
@@ -60,9 +62,11 @@ export default function ProjectWebPage() {
               <li>https://public-apis.io/</li>
               <li>qualquer outra que você achar pela internet</li>
             </ul>
-          </p>
-          <p>
-            A entrega do trabalho deve ser realizada anexando:
+          </div>
+          <div>
+            <p>
+              A entrega do trabalho deve ser realizada anexando:
+            </p>
             <ul className="list-disc list-inside pl-4 mt-2">
               <li>
                 link para o seu código no github (repositório precisa ter um
@@ -82,7 +86,7 @@ export default function ProjectWebPage() {
                 os requisitos deste projeto)
               </li>
             </ul>
-          </p>
+          </div>
           <p>
             <strong>OBS 1:</strong> apesar da tarefa ser em grupo, é necessário
             que TODOS realizem a entrega pelo Teams (quem não realizar a entrega
@@ -96,4 +100,3 @@ export default function ProjectWebPage() {
       </Card>
     </div>
   );
-}
