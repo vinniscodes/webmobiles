@@ -5,7 +5,7 @@ import type { Media, MediaType, Genre } from './types';
 // ATENÇÃO: Cole sua chave da API do TMDB aqui!
 const API_KEY = 'SUA_CHAVE_DE_API_VAI_AQUI'; 
 const API_BASE_URL = 'https://api.themoviedb.org/3';
-const IMAGE_BASE_URL = process.env.NEXT_PUBLIC_TMDB_IMAGE_BASE_URL || 'https://image.tmdb.org/t/p/';
+const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/';
 
 // Helper to construct full image URLs
 const getImageUrl = (path: string, size: string = 'w500') =>
