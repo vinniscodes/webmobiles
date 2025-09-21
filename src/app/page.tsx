@@ -1,3 +1,6 @@
+'use client';
+
+import { useState } from 'react';
 import {
   Card,
   CardContent,
@@ -15,10 +18,29 @@ import {
 } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { MovieCard } from '@/components/app/movie-card';
-import { mockSearchResults } from '@/lib/data';
 import { Search } from 'lucide-react';
+import { searchMedia } from '@/lib/tmdb';
+import type { Media, MediaType } from '@/lib/types';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function SearchPage() {
+  const [title, setTitle] = useState('');
+  const [type, setType] = useState<MediaType | 'any'>('any');
+  const [results, setResults] = useState<Media[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [searched, setSearched] = useState(false);
+
+  const handleSearch = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!title) return;
+    setLoading(true);
+    setSearched(true);
+    const searchType = type === 'any' ? 'multi' : type;
+    const searchResults = await searchMedia(title, searchType);
+    setResults(searchResults);
+    setLoading(false);
+  };
+
   return (
     <div className="space-y-12">
       <section id="search">
@@ -32,34 +54,39 @@ export default function SearchPage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <form className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
+            <form
+              onSubmit={handleSearch}
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-end"
+            >
               <div className="lg:col-span-2 space-y-2">
                 <label htmlFor="title">Title</label>
-                <Input id="title" placeholder="e.g., The Matrix" />
+                <Input
+                  id="title"
+                  placeholder="e.g., The Matrix"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                />
               </div>
               <div className="space-y-2">
                 <label htmlFor="type">Type</label>
-                <Select>
+                <Select
+                  value={type}
+                  onValueChange={(value) => setType(value as MediaType | 'any')}
+                >
                   <SelectTrigger id="type">
                     <SelectValue placeholder="Any" />
                   </SelectTrigger>
                   <SelectContent>
+                    <SelectItem value="any">Any</SelectItem>
                     <SelectItem value="movie">Movie</SelectItem>
-                    <SelectItem value="series">Series</SelectItem>
+                    <SelectItem value="tv">Series</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
-              <div className="space-y-2">
-                <label htmlFor="tmdbId">TMDB ID</label>
-                <Input
-                  id="tmdbId"
-                  placeholder="e.g., 603"
-                  className="font-code"
-                />
-              </div>
-              <div className="lg:col-span-4">
-                <Button type="submit" className="w-full">
-                  <Search className="mr-2 h-4 w-4" /> Search
+              <div className="lg:col-span-3">
+                <Button type="submit" className="w-full" disabled={loading}>
+                  <Search className="mr-2 h-4 w-4" />{' '}
+                  {loading ? 'Searching...' : 'Search'}
                 </Button>
               </div>
             </form>
@@ -69,13 +96,30 @@ export default function SearchPage() {
 
       <section id="results">
         <h2 className="text-3xl font-headline mb-6 text-center">
-          Search Results
+          {searched ? 'Search Results' : 'Popular Now'}
         </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-          {mockSearchResults.map((media) => (
-            <MovieCard key={media.id} media={media} />
-          ))}
-        </div>
+        {loading ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+            {Array.from({ length: 10 }).map((_, i) => (
+               <Card key={i}>
+                <Skeleton className="h-[400px] w-full" />
+                <CardHeader>
+                  <Skeleton className="h-6 w-3/4" />
+                   <Skeleton className="h-4 w-1/4" />
+                </CardHeader>
+              </Card>
+            ))}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+            {results.map((media) => (
+              <MovieCard key={media.id} media={media} />
+            ))}
+          </div>
+        )}
+         {searched && !loading && results.length === 0 && (
+          <p className="text-center text-muted-foreground mt-8">No results found for your search.</p>
+        )}
       </section>
     </div>
   );

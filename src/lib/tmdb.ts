@@ -1,0 +1,105 @@
+'use server';
+
+import type { Media, MediaType, Genre } from './types';
+
+const API_KEY = process.env.TMDB_API_KEY;
+const API_BASE_URL = 'https://api.themoviedb.org/3';
+const IMAGE_BASE_URL = process.env.NEXT_PUBLIC_TMDB_IMAGE_BASE_URL || 'https://image.tmdb.org/t/p/';
+
+// Helper to construct full image URLs
+const getImageUrl = (path: string, size: string = 'w500') =>
+  path ? `${IMAGE_BASE_URL}${size}${path}` : 'https://picsum.photos/seed/placeholder/500/750';
+
+// Fetch genres and create a lookup map
+let genreMap: Map<number, string> | null = null;
+async function getGenreMap() {
+  if (genreMap) return genreMap;
+
+  try {
+    const [movieGenresRes, tvGenresRes] = await Promise.all([
+      fetch(`${API_BASE_URL}/genre/movie/list?api_key=${API_KEY}`),
+      fetch(`${API_BASE_URL}/genre/tv/list?api_key=${API_KEY}`),
+    ]);
+    const movieGenres = await movieGenresRes.json();
+    const tvGenres = await tvGenresRes.json();
+    
+    const allGenres: Genre[] = [...movieGenres.genres, ...tvGenres.genres];
+    genreMap = new Map(allGenres.map((genre) => [genre.id, genre.name]));
+    
+    return genreMap;
+  } catch (error) {
+    console.error('Failed to fetch genres:', error);
+    return new Map();
+  }
+}
+
+
+// Normalize API results into our Media type
+const normalizeMedia = (item: any, genres: Map<number, string>): Media | null => {
+  const mediaType: MediaType = item.media_type || (item.title ? 'movie' : 'tv');
+  if (!item.poster_path) return null; // Skip items without a poster
+
+  return {
+    id: `${mediaType}-${item.id}`,
+    tmdbId: item.id.toString(),
+    title: item.title || item.name,
+    year: (item.release_date || item.first_air_date || '').split('-')[0],
+    posterUrl: getImageUrl(item.poster_path),
+    posterImageHint: `${mediaType} poster`,
+    type: mediaType,
+    rating: item.vote_average,
+    synopsis: item.overview,
+    genres: item.genre_ids?.map((id: number) => genres.get(id)).filter(Boolean) as string[] || [],
+  };
+};
+
+const normalizeMediaDetails = (item: any, mediaType: MediaType): Media => {
+    return {
+        id: `${mediaType}-${item.id}`,
+        tmdbId: item.id.toString(),
+        title: item.title || item.name,
+        year: (item.release_date || item.first_air_date || '').split('-')[0],
+        posterUrl: getImageUrl(item.poster_path),
+        posterImageHint: `${mediaType} poster`,
+        type: mediaType,
+        rating: item.vote_average,
+        synopsis: item.overview,
+        genres: item.genres?.map((g: Genre) => g.name) || [],
+    }
+}
+
+// Search for movies, TV series, or both
+export async function searchMedia(query: string, type: 'movie' | 'tv' | 'multi'): Promise<Media[]> {
+  const genres = await getGenreMap();
+  const url = `${API_BASE_URL}/search/${type}?api_key=${API_KEY}&query=${encodeURIComponent(query)}`;
+  
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+    
+    return data.results
+      .map((item: any) => normalizeMedia(item, genres))
+      .filter(Boolean) as Media[];
+  } catch (error) {
+    console.error('Search failed:', error);
+    return [];
+  }
+}
+
+// Get details for a specific movie or series
+export async function getMediaDetails(id: string, type: 'movie' | 'series'): Promise<Media | null> {
+   const mediaType = type === 'series' ? 'tv' : 'movie';
+   const url = `${API_BASE_URL}/${mediaType}/${id}?api_key=${API_KEY}`;
+
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+        return null;
+    }
+    const data = await response.json();
+    return normalizeMediaDetails(data, mediaType);
+  } catch (error) {
+    console.error('Get media details failed:', error);
+    return null;
+  }
+}

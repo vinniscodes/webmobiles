@@ -6,8 +6,6 @@ import {
   Card,
   CardContent,
   CardFooter,
-  CardHeader,
-  CardTitle,
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Bookmark, ThumbsDown, ThumbsUp } from 'lucide-react';
@@ -32,7 +30,7 @@ export function MovieCard({ media }: MovieCardProps) {
 
   return (
     <Card className="overflow-hidden transition-transform transform hover:-translate-y-2 hover:shadow-2xl hover:shadow-primary/20">
-      <Link href={`/media/${media.id}`} className="block">
+      <Link href={`/media/${media.type}-${media.tmdbId}`} className="block">
         <CardContent className="p-0 relative group">
           <Image
             src={media.posterUrl}

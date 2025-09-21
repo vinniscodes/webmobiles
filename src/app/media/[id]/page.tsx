@@ -1,12 +1,19 @@
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
-import { allMockMedia } from '@/lib/data';
 import { Button } from '@/components/ui/button';
 import { Bookmark, Star } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import { getMediaDetails } from '@/lib/tmdb';
+import type { Media } from '@/lib/types';
 
-export default function MediaDetailPage({ params }: { params: { id: string } }) {
-  const media = allMockMedia.find((m) => m.id === params.id);
+export default async function MediaDetailPage({ params }: { params: { id: string } }) {
+  const [type, tmdbId] = params.id.split('-');
+  
+  if (!type || !tmdbId || (type !== 'movie' && type !== 'series')) {
+    notFound();
+  }
+  
+  const media = await getMediaDetails(tmdbId, type as 'movie' | 'series');
 
   if (!media) {
     notFound();
@@ -36,7 +43,7 @@ export default function MediaDetailPage({ params }: { params: { id: string } }) 
           <div className="flex items-center space-x-4">
             <div className="flex items-center space-x-1">
               <Star className="w-5 h-5 text-yellow-400" />
-              <span className="font-bold text-lg">{media.rating}</span>
+              <span className="font-bold text-lg">{media.rating.toFixed(1)}</span>
               <span className="text-sm text-muted-foreground">/ 10</span>
             </div>
             <span className="font-code text-sm bg-muted text-muted-foreground px-2 py-1 rounded">

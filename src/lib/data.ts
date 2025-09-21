@@ -1,80 +1,5 @@
 import type { Media, SavedMedia } from './types';
 
-export const mockSearchResults: Media[] = [
-  {
-    id: '1',
-    tmdbId: '27205',
-    title: 'Inception',
-    year: '2010',
-    posterUrl: 'https://picsum.photos/seed/1/500/750',
-    posterImageHint: 'sci-fi movie',
-    type: 'movie',
-    rating: 8.8,
-    synopsis: 'A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a C.E.O.',
-    genres: ['Action', 'Sci-Fi', 'Thriller'],
-  },
-  {
-    id: '2',
-    tmdbId: '603',
-    title: 'The Matrix',
-    year: '1999',
-    posterUrl: 'https://picsum.photos/seed/2/500/750',
-    posterImageHint: 'action movie',
-    type: 'movie',
-    rating: 8.7,
-    synopsis: 'A computer hacker learns from mysterious rebels about the true nature of his reality and his role in the war against its controllers.',
-    genres: ['Action', 'Sci-Fi'],
-  },
-  {
-    id: '3',
-    tmdbId: '157336',
-    title: 'Interstellar',
-    year: '2014',
-    posterUrl: 'https://picsum.photos/seed/3/500/750',
-    posterImageHint: 'space movie',
-    type: 'movie',
-    rating: 8.6,
-    synopsis: 'A team of explorers travel through a wormhole in space in an attempt to ensure humanity\'s survival.',
-    genres: ['Adventure', 'Drama', 'Sci-Fi'],
-  },
-  {
-    id: '4',
-    tmdbId: '1396',
-    title: 'Breaking Bad',
-    year: '2008-2013',
-    posterUrl: 'https://picsum.photos/seed/4/500/750',
-    posterImageHint: 'drama series',
-    type: 'series',
-    rating: 9.5,
-    synopsis: 'A high school chemistry teacher diagnosed with inoperable lung cancer turns to manufacturing and selling methamphetamine in order to secure his family\'s future.',
-    genres: ['Crime', 'Drama', 'Thriller'],
-  },
-  {
-    id: '5',
-    tmdbId: '66732',
-    title: 'Stranger Things',
-    year: '2016-',
-    posterUrl: 'https://picsum.photos/seed/5/500/750',
-    posterImageHint: 'horror series',
-    type: 'series',
-    rating: 8.7,
-    synopsis: 'When a young boy vanishes, a small town uncovers a mystery involving secret experiments, terrifying supernatural forces, and one strange little girl.',
-    genres: ['Drama', 'Fantasy', 'Horror'],
-  },
-  {
-    id: '6',
-    tmdbId: '680',
-    title: 'Pulp Fiction',
-    year: '1994',
-    posterUrl: 'https://picsum.photos/seed/6/500/750',
-    posterImageHint: 'crime movie',
-    type: 'movie',
-    rating: 8.9,
-    synopsis: 'The lives of two mob hitmen, a boxer, a gangster and his wife, and a pair of diner bandits intertwine in four tales of violence and redemption.',
-    genres: ['Crime', 'Drama'],
-  },
-];
-
 export const mockSavedItems: SavedMedia[] = [
   {
     id: '7',
@@ -122,5 +47,3 @@ export const mockSavedItems: SavedMedia[] = [
     notes: 'Incredible film with a powerful message. The ending was shocking.',
   },
 ];
-
-export const allMockMedia = [...mockSearchResults, ...mockSavedItems];
