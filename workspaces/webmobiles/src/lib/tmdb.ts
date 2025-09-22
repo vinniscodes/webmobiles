@@ -1,6 +1,6 @@
-
 import type { Media, MediaType, Genre } from './types';
 
+// ATENÇÃO: A chave da API do TMDB está diretamente no código abaixo.
 const API_KEY = 'f0f837126ad3f38f1d78d397c936a14d';
 const API_BASE_URL = 'https://api.themoviedb.org/3';
 const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/';
@@ -9,9 +9,11 @@ if (API_KEY === 'SUA_CHAVE_DE_API_VAI_AQUI') {
   console.error("ERRO: A chave da API do TMDB não foi definida no arquivo src/lib/tmdb.ts. Por favor, adicione sua chave para a API funcionar.");
 }
 
+// Helper to construct full image URLs
 const getImageUrl = (path: string, size: string = 'w500') =>
   path ? `${IMAGE_BASE_URL}${size}${path}` : 'https://picsum.photos/seed/placeholder/500/750';
 
+// Fetch genres and create a lookup map
 let genreMap: Map<number, string> | null = null;
 async function getGenreMap() {
   if (genreMap) return genreMap;
@@ -37,9 +39,11 @@ async function getGenreMap() {
   }
 }
 
+
+// Normalize API results into our Media type
 const normalizeMedia = (item: any, genres: Map<number, string>): Media | null => {
   const mediaType: MediaType = item.media_type || (item.title ? 'movie' : 'tv');
-  if (!item.poster_path) return null;
+  if (!item.poster_path) return null; // Skip items without a poster
 
   return {
     id: `${mediaType}-${item.id}`,
@@ -70,8 +74,9 @@ const normalizeMediaDetails = (item: any, mediaType: MediaType): Media => {
     }
 }
 
+// Search for movies, TV series, or both
 export async function searchMedia(query: string, type: 'movie' | 'tv' | 'multi'): Promise<Media[]> {
-  const endpoint = query ? `search/${type}` : (type === 'multi' ? 'trending/all/week' : `discover/${type}`);
+  const endpoint = query ? `search/${type}` : `${type === 'multi' ? 'trending/all/week' : 'discover/' + type }`;
   const url = `${API_BASE_URL}/${endpoint}?api_key=${API_KEY}&language=pt-BR&query=${encodeURIComponent(query)}`;
   
   try {
@@ -93,6 +98,7 @@ export async function searchMedia(query: string, type: 'movie' | 'tv' | 'multi')
   }
 }
 
+// Get details for a specific movie or series
 export async function getMediaDetails(id: string, type: 'movie' | 'tv'): Promise<Media | null> {
    const url = `${API_BASE_URL}/${type}/${id}?api_key=${API_KEY}&language=pt-BR`;
 
