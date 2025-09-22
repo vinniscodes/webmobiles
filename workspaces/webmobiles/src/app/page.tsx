@@ -19,6 +19,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { MovieCard } from '@/components/app/movie-card';
 import { Search } from 'lucide-react';
+import { searchMedia } from '@/lib/tmdb';
 import type { Media, MediaType } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
 
@@ -30,19 +31,10 @@ export default function SearchPage() {
   const [searched, setSearched] = useState(false);
   const [popular, setPopular] = useState<Media[]>([]);
 
-  const fetchFromApi = async (url: string) => {
-    const response = await fetch(url);
-    if (!response.ok) {
-      console.error('Falha ao buscar dados da API');
-      return [];
-    }
-    return response.json();
-  };
-  
   useEffect(() => {
     const fetchPopular = async () => {
       setLoading(true);
-      const popularResults = await fetchFromApi('/api/tmdb?type=multi');
+      const popularResults = await searchMedia('', 'multi');
       setPopular(popularResults);
       setLoading(false);
     };
@@ -55,7 +47,7 @@ export default function SearchPage() {
     setLoading(true);
     setSearched(true);
     const searchType = type === 'any' ? 'multi' : type;
-    const searchResults = await fetchFromApi(`/api/tmdb?query=${encodeURIComponent(title)}&type=${searchType}`);
+    const searchResults = await searchMedia(title, searchType);
     setResults(searchResults);
     setLoading(false);
   };
