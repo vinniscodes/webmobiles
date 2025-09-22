@@ -1,5 +1,3 @@
-'use server';
-
 import type { Media, MediaType, Genre } from './types';
 
 // ATENÇÃO: A chave da API do TMDB está diretamente no código abaixo.
