@@ -1,4 +1,3 @@
-
 import { NextResponse } from 'next/server';
 import { searchMedia as tmdbSearch } from '@/lib/tmdb';
 import type { MediaType } from '@/lib/types';
@@ -13,8 +12,9 @@ export async function GET(request: Request) {
     return NextResponse.json(results);
   } catch (error) {
     console.error('API Route Error:', error);
+    const errorMessage = error instanceof Error ? error.message : 'Erro desconhecido';
     return NextResponse.json(
-      { message: 'Erro ao buscar dados do TMDB' },
+      { message: 'Erro ao buscar dados do TMDB', error: errorMessage },
       { status: 500 }
     );
   }

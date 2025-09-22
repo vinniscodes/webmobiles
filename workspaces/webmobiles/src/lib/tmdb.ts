@@ -5,10 +5,6 @@ const API_KEY = 'f0f837126ad3f38f1d78d397c936a14d';
 const API_BASE_URL = 'https://api.themoviedb.org/3';
 const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/';
 
-if (API_KEY === 'SUA_CHAVE_DE_API_VAI_AQUI') {
-  console.error("ERRO: A chave da API do TMDB não foi definida no arquivo src/lib/tmdb.ts. Por favor, adicione sua chave para a API funcionar.");
-}
-
 // Helper to construct full image URLs
 const getImageUrl = (path: string, size: string = 'w500') =>
   path ? `${IMAGE_BASE_URL}${size}${path}` : 'https://picsum.photos/seed/placeholder/500/750';
@@ -27,7 +23,7 @@ async function getGenreMap() {
       throw new Error(`Falha ao buscar gêneros: ${movieGenresRes.statusText} ${tvGenresRes.statusText}`);
     }
     const movieGenres = await movieGenresRes.json();
-    const tvGenres = await tvGenresRes.json();
+    const tvGenres = await tvGenres.json();
     
     const allGenres: Genre[] = [...movieGenres.genres, ...tvGenres.genres];
     genreMap = new Map(allGenres.map((genre) => [genre.id, genre.name]));
