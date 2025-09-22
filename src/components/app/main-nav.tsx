@@ -11,6 +11,7 @@ export function MainNav() {
     { href: '/', label: 'Buscar' },
     { href: '/profile', label: 'Meu Perfil' },
     { href: '/projetoweb', label: 'Projeto WEB' },
+    { href: '/api-key', label: 'API' },
   ];
 
   return (

@@ -2,8 +2,8 @@
 
 import type { Media, MediaType, Genre } from './types';
 
-// ATENÇÃO: Cole sua chave da API do TMDB aqui!
-const API_KEY = 'SUA_CHAVE_DE_API_VAI_AQUI'; 
+// ATENÇÃO: A chave da API do TMDB está diretamente no código abaixo.
+const API_KEY = 'f0f837126ad3f38f1d78d397c936a14d';
 const API_BASE_URL = 'https://api.themoviedb.org/3';
 const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/';
 
@@ -85,6 +85,7 @@ export async function searchMedia(query: string, type: 'movie' | 'tv' | 'multi')
     const response = await fetch(url);
     if (!response.ok) {
       const errorData = await response.json();
+      console.error('Erro na resposta da API TMDB:', errorData);
       throw new Error(errorData.status_message || `HTTP error! status: ${response.status}`);
     }
     const genres = await getGenreMap();
@@ -107,6 +108,7 @@ export async function getMediaDetails(id: string, type: 'movie' | 'tv'): Promise
     const response = await fetch(url);
     if (!response.ok) {
         const errorData = await response.json();
+        console.error('Erro ao buscar detalhes na API TMDB:', errorData);
         throw new Error(errorData.status_message || `HTTP error! status: ${response.status}`);
     }
     const data = await response.json();
